@@ -148,7 +148,8 @@ function openBuyBaidu(m){
   window.location.href=url;
 }
 function openSynth(prod){
-  var url='https://www.baidu.com/s?wd='+encodeURIComponent(prod+' 合成路线');
+  var clean=String(prod).replace(/\s*[（(][^)）]*[)）]\s*/g,'').trim();
+  var url='https://www.baidu.com/s?wd='+encodeURIComponent(clean+' 合成路线');
   showToast('正在查看「'+prod+'」的合成路线');
   window.location.href=url;
 }
