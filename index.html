@@ -52,7 +52,9 @@ td .en{color:var(--dim);font-size:11px}
 .use{font-size:13px;color:var(--dim);margin-bottom:14px;line-height:1.6}
 .synth-title{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--accent)}
 .synth{display:flex;flex-wrap:wrap;gap:8px}
-.synth .s{background:rgba(106,169,255,.12);border:1px solid rgba(106,169,255,.35);color:var(--accent);border-radius:14px;padding:5px 12px;font-size:13px}
+.synth .s{background:rgba(106,169,255,.12);border:1px solid rgba(106,169,255,.35);color:var(--accent);border-radius:14px;padding:5px 12px;font-size:13px;cursor:pointer;transition:transform .1s,background .12s;border:none;font-family:inherit}
+.synth .s:hover{background:rgba(106,169,255,.28);transform:translateY(-2px)}
+.synth .s::after{content:" ↗";font-size:11px;opacity:.7}
 .mfoot{margin-top:18px;display:flex;gap:10px;align-items:center}
 .mfoot .btn{padding:8px 16px;border-radius:8px;border:1px solid var(--accent);background:rgba(106,169,255,.12);color:var(--accent);cursor:pointer;font-size:13px}
 .mfoot .btn:hover{background:rgba(106,169,255,.22)}
@@ -145,6 +147,11 @@ function openBuyBaidu(m){
   showToast('正在跳转：百度搜索「'+m.name+'」');
   window.location.href=url;
 }
+function openSynth(prod){
+  var url='https://www.baidu.com/s?wd='+encodeURIComponent(prod+' 合成路线');
+  showToast('正在查看「'+prod+'」的合成路线');
+  window.location.href=url;
+}
 function showToast(msg){
   var t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
@@ -160,7 +167,7 @@ function showModal(m){
   document.getElementById('muse').textContent='主要用途：'+m.use;
   var wrap=document.getElementById('msynth');
   wrap.innerHTML='';
-  m.synth.forEach(function(s){ var d=document.createElement('span'); d.className='s'; d.textContent=s; wrap.appendChild(d); });
+  m.synth.forEach(function(s){ var d=document.createElement('button'); d.className='s'; d.type='button'; d.textContent=s; d.title='点击查看「'+s+'」的合成路线'; d.addEventListener('click',function(ev){ ev.stopPropagation(); openSynth(s); }); wrap.appendChild(d); });
   modal.classList.add('show');
 }
 document.getElementById('mclose').addEventListener('click',function(){ modal.classList.remove('show'); });
