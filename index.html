@@ -81,7 +81,7 @@ footer{max-width:1280px;margin:26px auto 0;padding:0 22px;color:var(--dim);font-
   </div>
 </main>
 <footer>
-  说明：原料均为常见的有机合成/基础化工原料；点击表格行会在新标签页打开<b>安耐吉化学「该原料」的商品页</b>（按 CAS 直达，可直接加入购物车）；若页面提示无货，可右键弹窗中的「百度搜索购买」找其他供应商；<b>右键点击</b>该行可查看由该原料可合成的常见有机物。<br>购买页内容与价格以安耐吉化学实时页面为准（部分商品价格与下单需登录）；弹窗提供「安耐吉化学」「百度搜索购买」两个入口。本页数据仅供学习参考，不构成投资建议。
+  说明：原料均为常见的有机合成/基础化工原料；点击表格行会<b>直接跳转到安耐吉化学「该原料」的商品页</b>（按 CAS 直达，可直接加入购物车；浏览器返回键可回到本表）；若页面提示无货，可右键弹窗中的「百度搜索购买」找其他供应商；<b>右键点击</b>该行可查看由该原料可合成的常见有机物。<br>购买页内容与价格以安耐吉化学实时页面为准（部分商品价格与下单需登录）；弹窗提供「安耐吉化学」「百度搜索购买」两个入口。本页数据仅供学习参考，不构成投资建议。
 </footer>
 <div id="toast"></div>
 <div id="modal"><div class="mbox">
@@ -130,20 +130,20 @@ function openInNewTab(url){
 function openBuy(m){
   var b=BUY[m.name];
   var url=(b&&b.uen)?b.uen:'https://www.energy-chemical.com/front/cas_'+encodeURIComponent(m.cas)+'.htm';
-  showToast('正在打开安耐吉化学「'+m.name+'」商品页');
-  openInNewTab(url);
+  showToast('正在跳转：安耐吉化学「'+m.name+'」商品页（返回键可回到本表）');
+  window.location.href=url;
 }
 function openBuyEnergy(m){
   var b=BUY[m.name];
   var url=(b&&b.uen)?b.uen:'https://www.energy-chemical.com/front/cas_'+encodeURIComponent(m.cas)+'.htm';
-  showToast('正在打开安耐吉化学「'+m.name+'」商品页');
-  openInNewTab(url);
+  showToast('正在跳转：安耐吉化学「'+m.name+'」商品页');
+  window.location.href=url;
 }
 function openBuyBaidu(m){
   var b=BUY[m.name];
   var url=(b&&b.ubd)?b.ubd:'https://www.baidu.com/s?wd='+encodeURIComponent(m.name);
-  showToast('正在打开百度搜索「'+m.name+'」');
-  openInNewTab(url);
+  showToast('正在跳转：百度搜索「'+m.name+'」');
+  window.location.href=url;
 }
 function showToast(msg){
   var t=document.getElementById('toast');
