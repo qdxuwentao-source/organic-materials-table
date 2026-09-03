@@ -147,12 +147,27 @@ function render(list){
       '<td class="cas">'+esc(it.cas)+'</td>'+
       '<td class="spec">'+esc(it.spec)+'</td>'+
       '<td><span class="loc-badge" style="background:'+locColor(it.loc)+'">'+esc(it.loc)+'</span></td>';
-    tr.addEventListener('click',function(){ showModal(it); });
+        var badge=tr.querySelector('.loc-badge');
+    badge.style.cursor='pointer';
+    badge.title='点击筛选该储存位置并跳转';
+    badge.addEventListener('click',function(ev){
+      ev.stopPropagation();
+      setLoc(it.loc);
+    });
+tr.addEventListener('click',function(){ showModal(it); });
     tr.addEventListener('contextmenu',function(ev){ ev.preventDefault(); showModal(it); });
     tbody.appendChild(tr);
   });
 }
 var modal=document.getElementById('modal');
+var mlocEl=document.getElementById('mloc');
+mlocEl.style.cursor='pointer';
+mlocEl.title='点击筛选该储存位置并跳转';
+mlocEl.addEventListener('click',function(){
+  modal.classList.remove('show');
+  if(mlocEl.dataset.loc) setLoc(mlocEl.dataset.loc);
+});
+
 function showToast(msg){
   var t=document.getElementById('toast');
   if(!t) return;
@@ -178,6 +193,7 @@ function showModal(it){
   document.getElementById('mcas').textContent=it.cas||'—';
   document.getElementById('mspec').textContent=it.spec||'—';
   document.getElementById('mloc').textContent=it.loc||'—';
+  document.getElementById('mloc').dataset.loc=it.loc||'';
   var syn=SYNTH[it.cas];
   var wrap=document.getElementById('msynth');
   if(syn && syn.length){
@@ -230,15 +246,15 @@ document.getElementById('search').addEventListener('input',function(e){
   q=e.target.value.trim().toLowerCase();
   apply(q!=='');
 });
+function setLoc(name){
+  loc=(loc===name)?'':name;
+  document.querySelectorAll('.locchips .c').forEach(function(x){x.classList.toggle('on', x.dataset.loc===loc);});
+  apply(loc!=='');
+}
 LOCCS.forEach(function(l){
   var d=document.createElement('span');
   d.className='c'; d.textContent=l.name+'（'+l.count+'）'; d.dataset.loc=l.name;
-  d.addEventListener('click',function(){
-    loc=(loc===l.name)?'':l.name;
-    document.querySelectorAll('.locchips .c').forEach(function(x){x.classList.remove('on');});
-    if(loc)d.classList.add('on');
-    apply(loc!=='');
-  });
+  d.addEventListener('click',function(){ setLoc(l.name); });
   document.getElementById('locchips').appendChild(d);
 });
 render(ITEMS);
