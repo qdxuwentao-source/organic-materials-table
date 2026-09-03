@@ -194,9 +194,24 @@ document.getElementById('mclose').addEventListener('click',function(){ modal.cla
 document.getElementById('rmclose').addEventListener('click',function(){ document.getElementById('rmodal').classList.remove('show'); });
 document.getElementById('rmodal').addEventListener('click',function(ev){ if(ev.target===document.getElementById('rmodal')) document.getElementById('rmodal').classList.remove('show'); });
 modal.addEventListener('click',function(ev){ if(ev.target===modal) modal.classList.remove('show'); });
-// search + location filter
+// search + location filter（输入搜索 / 点击位置标签后，自动跳转到首个匹配行）
 var q='', loc='';
-function apply(){
+function firstMatchRow(){
+  var rows=tbody.querySelectorAll('tr');
+  for(var i=0;i<rows.length;i++){
+    if(!rows[i].classList.contains('muted')) return rows[i];
+  }
+  return null;
+}
+function jumpToMatch(){
+  var row=firstMatchRow();
+  if(!row){ jumpToMatch._last=null; return; }
+  if(jumpToMatch._last===row) return;
+  jumpToMatch._last=row;
+  try{ row.scrollIntoView({block:'center',behavior:'smooth'}); }
+  catch(err){ row.scrollIntoView(); }
+}
+function apply(jump){
   var rows=tbody.querySelectorAll('tr');
   var n=0;
   rows.forEach(function(tr){
@@ -207,9 +222,14 @@ function apply(){
     tr.classList.toggle('found',!!q&&hit);
     if(hit&&locHit)n++;
   });
-  document.getElementById('count').textContent='共 '+ITEMS.length+' 种 ｜ 当前显示 '+n+' 种';
+  var count=document.getElementById('count');
+  if(count) count.textContent='共 '+ITEMS.length+' 种 ｜ 当前显示 '+n+' 种';
+  if(jump) jumpToMatch();
 }
-document.getElementById('search').addEventListener('input',function(e){ q=e.target.value.trim().toLowerCase(); apply(); });
+document.getElementById('search').addEventListener('input',function(e){
+  q=e.target.value.trim().toLowerCase();
+  apply(q!=='');
+});
 LOCCS.forEach(function(l){
   var d=document.createElement('span');
   d.className='c'; d.textContent=l.name+'（'+l.count+'）'; d.dataset.loc=l.name;
@@ -217,12 +237,13 @@ LOCCS.forEach(function(l){
     loc=(loc===l.name)?'':l.name;
     document.querySelectorAll('.locchips .c').forEach(function(x){x.classList.remove('on');});
     if(loc)d.classList.add('on');
-    apply();
+    apply(loc!=='');
   });
   document.getElementById('locchips').appendChild(d);
 });
 render(ITEMS);
 apply();
+
 })();
 </script>
 </body>
